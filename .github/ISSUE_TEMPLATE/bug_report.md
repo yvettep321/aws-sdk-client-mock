@@ -17,9 +17,15 @@ assignees: ''
 
 <!-- Put detailed description here -->
 
+**Reproduction**
+
+<!-- Put a minimal reproducible example here
+     or, even better, a link to a repository with such reproduction -->
+
 **Environment**
 
-- Node version: 
+- Node version: <!-- "node -v" output -->
+- Testing lib and version: <!-- e.g. Mocha, Jest, ... -->
 - Typescript version: 
 - AWS SDK v3 Client mock version: 
 - AWS JS SDK libs and versions:

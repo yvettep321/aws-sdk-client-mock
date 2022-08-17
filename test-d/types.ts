@@ -1,5 +1,5 @@
 import {AwsClientStub, mockClient} from '../src';
-import {ListTopicsCommand, PublishCommand, SNSClient} from '@aws-sdk/client-sns';
+import {ListTopicsCommand, PublishCommand, PublishCommandOutput, SNSClient} from '@aws-sdk/client-sns';
 import {expectError, expectType} from 'tsd';
 
 expectType<AwsClientStub<SNSClient>>(mockClient(SNSClient));
@@ -26,3 +26,20 @@ expectError(mockClient(SNSClient).on(ListTopicsCommand, {TopicArn: '', Message: 
 // invalid output types
 expectError(mockClient(SNSClient).on(PublishCommand).resolves({MessageId: '', Topics: []}));
 expectError(mockClient(SNSClient).on(PublishCommand).resolves({Topics: []}));
+
+// Sinon Spy
+expectType<PublishCommand>(mockClient(SNSClient).commandCalls(PublishCommand)[0].args[0]);
+expectType<Promise<PublishCommandOutput>>(mockClient(SNSClient).commandCalls(PublishCommand)[0].returnValue);
+
+// Matchers
+expect(mockClient(SNSClient)).toHaveReceivedCommand(PublishCommand);
+expectError(expect(mockClient(SNSClient)).toHaveReceivedCommand(String));
+
+expect(mockClient(SNSClient)).toHaveReceivedCommandTimes(PublishCommand, 1);
+expectError(expect(mockClient(SNSClient)).toHaveReceivedCommandTimes(PublishCommand));
+
+expect(mockClient(SNSClient)).toHaveReceivedCommandWith(PublishCommand, {Message: ''});
+expectError(expect(mockClient(SNSClient)).toHaveReceivedCommandWith(PublishCommand, {Foo: ''}));
+
+expect(mockClient(SNSClient)).toHaveReceivedNthCommandWith(1, PublishCommand, {Message: ''});
+expectError(expect(mockClient(SNSClient)).toHaveReceivedNthCommandWith(1, PublishCommand, {Foo: ''}));

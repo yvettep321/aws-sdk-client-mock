@@ -2,6 +2,72 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.0.0-beta.1](https://github.com/m-radzikowski/aws-sdk-client-mock/compare/v2.0.0-beta.0...v2.0.0-beta.1) (2022-06-27)
+
+
+### Bug Fixes
+
+* add @types/jest as a regular dependency ([c51c9d9](https://github.com/m-radzikowski/aws-sdk-client-mock/commit/c51c9d903a0e55285b93947b38ef6f1b0e06331e))
+
+## [2.0.0-beta.0](https://github.com/m-radzikowski/aws-sdk-client-mock/compare/v1.0.0...v2.0.0-beta.0) (2022-06-26)
+
+
+### ⚠ BREAKING CHANGES
+
+* remove libStorage helper to remove incompatibilities (#105)
+
+### Bug Fixes
+
+* remove libStorage helper to remove incompatibilities ([#105](https://github.com/m-radzikowski/aws-sdk-client-mock/issues/105)) ([097d29f](https://github.com/m-radzikowski/aws-sdk-client-mock/commit/097d29f1cbcd55f21ceb8a1718af3c7e55eb9a6f))
+
+## [1.0.0](https://github.com/m-radzikowski/aws-sdk-client-mock/compare/v0.6.2...v1.0.0) (2022-06-14)
+
+
+### ⚠ BREAKING CHANGES
+
+* remove @aws-sdk types and client-s3 from peer dependencies (#57)
+
+### Features
+
+* introduce jest matchers ([#97](https://github.com/m-radzikowski/aws-sdk-client-mock/issues/97)) ([b5f2c10](https://github.com/m-radzikowski/aws-sdk-client-mock/commit/b5f2c100075ad0d30856ec611bed739812b4a872))
+
+
+### Bug Fixes
+
+* remove [@aws-sdk](https://github.com/aws-sdk) types and client-s3 from peer dependencies ([#57](https://github.com/m-radzikowski/aws-sdk-client-mock/issues/57)) ([c66e050](https://github.com/m-radzikowski/aws-sdk-client-mock/commit/c66e050ba87895120277af3b4739f761c1ed231a))
+
+### [0.6.2](https://github.com/m-radzikowski/aws-sdk-client-mock/compare/v0.6.1...v0.6.2) (2022-03-06)
+
+
+### Features
+
+* chained behaviors for consecutive command calls ([#80](https://github.com/m-radzikowski/aws-sdk-client-mock/issues/80)) ([fe131a9](https://github.com/m-radzikowski/aws-sdk-client-mock/commit/fe131a92afedd653ad576d7ac415d24a1984d6c1))
+
+### [0.6.1](https://github.com/m-radzikowski/aws-sdk-client-mock/compare/v0.6.0...v0.6.1) (2022-03-05)
+
+
+### Bug Fixes
+
+* bump typescript to 4.6.2 ([5c29961](https://github.com/m-radzikowski/aws-sdk-client-mock/commit/5c29961e2c0e93e23d0cac705aad8cbcb8ec406d)), closes [#79](https://github.com/m-radzikowski/aws-sdk-client-mock/issues/79)
+
+## [0.6.0](https://github.com/m-radzikowski/aws-sdk-client-mock/compare/v0.5.6...v0.6.0) (2022-02-12)
+
+
+### ⚠ BREAKING CHANGES
+
+* recreate mock on reset() (#76)
+
+### Bug Fixes
+
+* recreate mock on reset() ([#76](https://github.com/m-radzikowski/aws-sdk-client-mock/issues/76)) ([9e1a873](https://github.com/m-radzikowski/aws-sdk-client-mock/commit/9e1a873e0dbd2c969a7f164d9dca4ebf50a5db51)), closes [#1572](https://github.com/m-radzikowski/aws-sdk-client-mock/issues/1572) [#1572](https://github.com/m-radzikowski/aws-sdk-client-mock/issues/1572)
+
+### [0.5.6](https://github.com/m-radzikowski/aws-sdk-client-mock/compare/v0.5.5...v0.5.6) (2021-11-06)
+
+
+### Features
+
+* getting mock calls with command type and payload filter ([#61](https://github.com/m-radzikowski/aws-sdk-client-mock/issues/61)) ([b3f3250](https://github.com/m-radzikowski/aws-sdk-client-mock/commit/b3f32507162e7e0054e40807c9119faf5266f969))
+
 ### [0.5.5](https://github.com/m-radzikowski/aws-sdk-client-mock/compare/v0.5.4...v0.5.5) (2021-09-19)
 
 

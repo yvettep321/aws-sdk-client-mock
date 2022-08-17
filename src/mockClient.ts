@@ -19,9 +19,10 @@ export const mockClient = <TInput extends object, TOutput extends MetadataBearer
         send.restore();
     }
 
-    const sendStub: SinonStub<[Command<TInput, any, TOutput, any, any>], unknown> = stub(instance, 'send');
+    const sendStub = stub(instance, 'send') as SinonStub<[Command<TInput, any, TOutput, any, any>], Promise<TOutput>>;
 
-    return new AwsStub<TInput, TOutput>(sendStub);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+    return new AwsStub<TInput, TOutput>(instance, sendStub);
 };
 
 type ClassType<T> = {
