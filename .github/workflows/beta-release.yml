@@ -1,4 +1,4 @@
-name: Release
+name: Beta Release
 
 on:
   workflow_dispatch:
@@ -34,14 +34,8 @@ jobs:
       - name: Create release
         id: create_release
         run: |
-          yarn run release
+          yarn run release --prerelease beta
           echo ::set-output name=tag_name::$(git describe HEAD --abbrev=0)
-
-      - run: yarn run typedoc
-      - name: commit docs website
-        run: |
-          git add docs
-          git diff-index --quiet HEAD || git commit -m 'docs: update docs website'
 
       - name: run e2e tests
         run: |
@@ -49,7 +43,7 @@ jobs:
           yarn run local-publish
           yarn run test-e2e
 
-      - run: npm publish
+      - run: npm publish --tag beta
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
@@ -67,3 +61,4 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           tag_name: ${{ steps.create_release.outputs.tag_name }}
           body_path: RELEASE_BODY.md
+          prerelease: true

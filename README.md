@@ -16,13 +16,14 @@ Features:
 
 - 🌊&nbsp; **fluent interface** - declaring behavior is short and readable
 - 🔍&nbsp; **matching options** - defining mock behavior by Command type and/or its input payload
-- 🕵️&nbsp; **spying** - checking if Commands were actually send
+- 🕵️&nbsp; **spying** - checking if Commands were actually sent
+- 🃏&nbsp; **Jest matchers** - easily verifying sent Commands
 - 🖋️&nbsp; **fully typed** - same type control for declaring mock's behavior as when writing regular code
 - ✅&nbsp; **fully tested** - reliable mocks help instead of impeding
 
 In action:
 
-![aws-client-mock-example](.github/aws-client-mock-example.gif)
+![aws-client-mock-example](media/aws-client-mock-example.gif)
 
 ### Table of Contents
 
@@ -34,7 +35,9 @@ In action:
     - [DynamoDB DocumentClient](#dynamodb-documentclient)
     - [Lib Storage Upload](#lib-storage-upload)
     - [Paginated operations](#paginated-operations)
+    - [SDK v2-style mocks](#sdk-v2-style-mocks)
   - [Inspect](#inspect)
+  - [Jest matchers](#jest-matchers)
 - [API Reference](#api-reference)
 - [AWS Lambda example](#aws-lambda-example)
 - [Caveats](#caveats)
@@ -198,6 +201,22 @@ snsMock
     });
 ```
 
+Specify chained behaviors - next behaviors for consecutive calls:
+
+```typescript
+snsMock
+    .on(PublishCommand)
+    .resolvesOnce({ // for the first command call
+        MessageId: '12345678-1111-1111-1111-111122223333'
+    })
+    .resolvesOnce({ // for the second command call
+        MessageId: '12345678-2222-2222-2222-111122223333'
+    })
+    .resolves({ // for further calls
+        MessageId: '12345678-3333-3333-3333-111122223333'
+    });
+```
+
 Specify mock throwing an error:
 
 ```typescript
@@ -218,6 +237,9 @@ snsMock
     });
 ```
 
+Together with `resolvesOnce()`, you can also use `rejectsOnce()` and `callsFakeOnce()`
+to specify consecutive behaviors.
+
 #### DynamoDB DocumentClient
 
 You can mock the `DynamoDBDocumentClient` just like any other Client:
@@ -233,17 +255,16 @@ ddbMock.on(QueryCommand).resolves({
 
 #### Lib Storage Upload
 
-To mock `@aws-sdk/lib-storage` `Upload` you need to call
-a helper function `mockLibStorageUpload()`
-that will configure required S3Client command mocks:
+To mock `@aws-sdk/lib-storage` `Upload` you need to mock
+at least two commands: `CreateMultipartUploadCommand` and `UploadPartCommand`
+used [under the hood](https://github.com/aws/aws-sdk-js-v3/blob/main/lib/lib-storage/src/Upload.ts):
 
 ```typescript
-import {mockLibStorageUpload} from 'aws-sdk-client-mock';
-import {Upload} from '@aws-sdk/lib-storage';
-import {S3Client} from '@aws-sdk/client-s3';
+import {S3Client, CreateMultipartUploadCommand, UploadPartCommand} from '@aws-sdk/client-s3';
 
 const s3Mock = mockClient(S3Client);
-mockLibStorageUpload(s3Mock);
+s3Mock.on(CreateMultipartUploadCommand).resolves({UploadId: '1'});
+s3Mock.on(UploadPartCommand).resolves({ETag: '1'});
 
 const s3Upload = new Upload({
     client: new S3Client({}),
@@ -261,9 +282,24 @@ s3Upload.on('httpUploadProgress', (progress) => {
 await s3Upload.done();
 ```
 
-You can call `mockLibStorageUpload()` without providing an S3Client mock.
-In that case, the client mock will be created and returned from the function.
-However, you still need to have `@aws-sdk/client-s3` installed as a dependency.
+This way, the  `Upload#done()` will complete successfuly.
+
+To cause a failure, you need to specify the `rejects()` behavior
+for one of the AWS SDK Commands used by the `@aws-sdk/lib-storage`.
+
+For uploading a small file (under the defined multipart upload single part size),
+`lib-storage` sends a `PutObjectCommand`. To make it fail:
+
+```ts
+s3Mock.on(PutObjectCommand).rejects();
+```
+
+For bigger files, it makes a series of calls including `CreateMultipartUploadCommand`,
+`UploadPartCommand`, and `CompleteMultipartUploadCommand`. Making any of them fail will fail the upload:
+
+```ts
+s3Mock.on(UploadPartCommand).rejects();
+```
 
 #### Paginated operations
 
@@ -290,6 +326,38 @@ for await (const page of paginator) {
     items.push(...page.Items || []);
 }
 ```
+
+#### SDK v2-style mocks
+
+The AWS SDK v3 gives an option to use it similarly to v2 SDK,
+with command method call instead of `send()`:
+
+```typescript
+import {SNS} from '@aws-sdk/client-sns';
+
+const sns = new SNS({});
+const result = await sns.publish({
+    TopicArn: 'arn:aws:sns:us-east-1:111111111111:MyTopic',
+    Message: 'My message',
+});
+```
+
+Although this approach is not recommended by AWS,
+those calls can be mocked in the standard way:
+
+```typescript
+import {PublishCommand, SNSClient} from '@aws-sdk/client-sns';
+
+const snsMock = mockClient(SNSClient);
+snsMock
+    .on(PublishCommand)
+    .resolves({
+        MessageId: '12345678-1111-2222-3333-111122223333',
+    });
+```
+
+Notice that in mocks you still need to use `SNSClient`, not `SNS`,
+as well as `Command` classes.
 
 ### Inspect
 
@@ -319,6 +387,22 @@ You can get the stub instance to configure and use it directly:
 ```typescript
 const snsSendStub = snsMock.send;
 ```
+
+### Jest matchers
+
+Library provides [Jest](https://jestjs.io/) matchers that simplify verification
+that the mocked Client was called with given Commands:
+
+```ts
+expect(snsMock).toHaveReceivedCommand(PublishCommand);
+expect(snsMock).toHaveReceivedCommandTimes(PublishCommand, 2);
+expect(snsMock).toHaveReceivedCommandWith(PublishCommand, {Message: 'My message'});
+expect(snsMock).toHaveReceivedNthCommandWith(2, PublishCommand, {Message: 'My message'});
+```
+
+Shorter aliases exist, like `toReceiveCommandTimes()`. 
+
+Matchers are automatically imported with the library.
 
 ## API Reference
 
@@ -385,7 +469,7 @@ it('message IDs are returned', async () => {
   expect(result[0]).toBe('12345678-1111-2222-3333-111122223333');
 });
 
-it('SNS Client is called', async () => {
+it('SNS Client is called with PublishCommand', async () => {
   snsMock.on(PublishCommand).resolves({
     MessageId: '111-222-333',
   });
@@ -394,7 +478,7 @@ it('SNS Client is called', async () => {
     messages: ['qq', 'xx']
   });
 
-  expect(snsMock.calls()).toHaveLength(2);
+  expect(snsMock).toHaveReceivedCommandTimes(PublishCommand, 2);
 });
 ```
 

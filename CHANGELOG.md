@@ -2,6 +2,47 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.0.0-beta.1](https://github.com/m-radzikowski/aws-sdk-client-mock/compare/v2.0.0-beta.0...v2.0.0-beta.1) (2022-06-27)
+
+
+### Bug Fixes
+
+* add @types/jest as a regular dependency ([c51c9d9](https://github.com/m-radzikowski/aws-sdk-client-mock/commit/c51c9d903a0e55285b93947b38ef6f1b0e06331e))
+
+## [2.0.0-beta.0](https://github.com/m-radzikowski/aws-sdk-client-mock/compare/v1.0.0...v2.0.0-beta.0) (2022-06-26)
+
+
+### ⚠ BREAKING CHANGES
+
+* remove libStorage helper to remove incompatibilities (#105)
+
+### Bug Fixes
+
+* remove libStorage helper to remove incompatibilities ([#105](https://github.com/m-radzikowski/aws-sdk-client-mock/issues/105)) ([097d29f](https://github.com/m-radzikowski/aws-sdk-client-mock/commit/097d29f1cbcd55f21ceb8a1718af3c7e55eb9a6f))
+
+## [1.0.0](https://github.com/m-radzikowski/aws-sdk-client-mock/compare/v0.6.2...v1.0.0) (2022-06-14)
+
+
+### ⚠ BREAKING CHANGES
+
+* remove @aws-sdk types and client-s3 from peer dependencies (#57)
+
+### Features
+
+* introduce jest matchers ([#97](https://github.com/m-radzikowski/aws-sdk-client-mock/issues/97)) ([b5f2c10](https://github.com/m-radzikowski/aws-sdk-client-mock/commit/b5f2c100075ad0d30856ec611bed739812b4a872))
+
+
+### Bug Fixes
+
+* remove [@aws-sdk](https://github.com/aws-sdk) types and client-s3 from peer dependencies ([#57](https://github.com/m-radzikowski/aws-sdk-client-mock/issues/57)) ([c66e050](https://github.com/m-radzikowski/aws-sdk-client-mock/commit/c66e050ba87895120277af3b4739f761c1ed231a))
+
+### [0.6.2](https://github.com/m-radzikowski/aws-sdk-client-mock/compare/v0.6.1...v0.6.2) (2022-03-06)
+
+
+### Features
+
+* chained behaviors for consecutive command calls ([#80](https://github.com/m-radzikowski/aws-sdk-client-mock/issues/80)) ([fe131a9](https://github.com/m-radzikowski/aws-sdk-client-mock/commit/fe131a92afedd653ad576d7ac415d24a1984d6c1))
+
 ### [0.6.1](https://github.com/m-radzikowski/aws-sdk-client-mock/compare/v0.6.0...v0.6.1) (2022-03-05)
 
 
